@@ -1,10 +1,10 @@
 import { List, ListItem } from "@mui/material";
 import Link from "next/link";
 
-export default function Sample() {
+export default function Paycheck() {
   return (
     <div>
-      <h1>Sample</h1>
+      <h1>Paycheck</h1>
       <List>
         <ListItem>
           <Link href="/sample">Link Sample</Link>
