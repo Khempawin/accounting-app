@@ -1,5 +1,9 @@
 import React from "react";
-import { InvoiceBaseLineItem, InvoiceBaseRecord, InvoiceRecord } from "@/app/interfaces/invoice";
+import {
+  InvoiceBaseLineItem,
+  InvoiceBaseRecord,
+  InvoiceRecord,
+} from "@/app/interfaces/invoice";
 import { Button } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
@@ -12,7 +16,13 @@ export default function Invoice() {
   const [showId, setShowId] = React.useState<number>(0);
   const [open, setOpen] = React.useState(false);
 
-  const handleSaveNewInvoice = (newInvoice: InvoiceBaseRecord, lineItems: InvoiceBaseLineItem[]) => {
+  const handleSaveNewInvoice = (
+    newInvoice: InvoiceBaseRecord,
+    lineItems: InvoiceBaseLineItem[]
+  ) => {
+    const newInvoiceAdd = { ...newInvoice, id: 3 };
+    console.log(lineItems);
+    setInvoiceRecords(invoiceRecords.concat([newInvoiceAdd]));
     setOpen(false);
   };
 

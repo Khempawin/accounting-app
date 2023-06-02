@@ -13,6 +13,9 @@ import lightThemeOptions from "../styles/theme/lightThemeOptions";
 import "../styles/globals.css";
 import RootLayout from "../app/components/layout/layout";
 import Head from "next/head";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
@@ -31,16 +34,18 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
 
   return (
     <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
-        <Head>
-          <title>Accounting App</title>
-          <meta name="description" content="Simple Accounting App" />
-        </Head>
-        <RootLayout>
-          <Component {...pageProps} />
-        </RootLayout>
-      </ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <ThemeProvider theme={lightTheme}>
+          <CssBaseline />
+          <Head>
+            <title>Accounting App</title>
+            <meta name="description" content="Simple Accounting App" />
+          </Head>
+          <RootLayout>
+            <Component {...pageProps} />
+          </RootLayout>
+        </ThemeProvider>
+      </LocalizationProvider>
     </CacheProvider>
   );
 };

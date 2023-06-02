@@ -23,3 +23,15 @@ export interface InvoiceBaseLineItem{
 export interface InvoiceLineItem extends InvoiceBaseLineItem{
     invoice_id: number;
 }
+
+export interface ISelectOption {
+    label: string;
+    value: string;
+}
+
+export interface InvoiceSaveForm {
+    date: Date;
+    place: string;
+    payment_method: string;
+    total: number;
+}
