@@ -1,4 +1,17 @@
-import { InvoiceBaseLineItem, InvoiceRecord } from "../interfaces/invoice";
+import {
+  InvoiceBaseLineItem,
+  InvoiceLineItem,
+  InvoiceRecord,
+} from "../interfaces/invoice";
+
+export const sampleInvoiceLineItem: InvoiceLineItem = {
+  id: 1,
+  invoice_id: 1,
+  name: "luggage cart",
+  category: "services",
+  quantity: 1,
+  total: 6,
+};
 
 export const sampleInvoiceRecords: InvoiceRecord[] = [
   {

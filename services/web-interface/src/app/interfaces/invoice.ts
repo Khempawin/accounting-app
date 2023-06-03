@@ -1,37 +1,36 @@
-export interface InvoiceBaseRecord{
-    date: Date;
-    place: string;
-    payment_method: string;
-    total: number;
-    total_calculated?: number;
-    subtotal_calculated?: number;
-    tax_calculated?: number;
-    tip_calculated?: number;
+export interface InvoiceBaseRecord {
+  date: Date;
+  place: string;
+  payment_method: string;
+  total: number;
+  total_calculated?: number;
+  subtotal_calculated?: number;
+  tax_calculated?: number;
+  tip_calculated?: number;
 }
 
-export interface InvoiceRecord extends InvoiceBaseRecord{
-    id: number;
+export interface InvoiceRecord extends InvoiceBaseRecord {
+  id: number;
+  invoice_id?: InvoiceLineItem[];
 }
 
-export interface InvoiceBaseLineItem{
-    name: string;
-    category: string;
-    quantity: number;
-    total: number;
+export interface InvoiceBaseLineItem {
+  name: string;
+  category: string;
+  quantity: number;
+  total: number;
 }
 
-export interface InvoiceLineItem extends InvoiceBaseLineItem{
-    invoice_id: number;
+export interface InvoiceLineItem extends InvoiceBaseLineItem {
+  id: number;
+  invoice_id: number;
 }
 
 export interface ISelectOption {
-    label: string;
-    value: string;
+  label: string;
+  value: string;
 }
 
-export interface InvoiceSaveForm {
-    date: Date;
-    place: string;
-    payment_method: string;
-    total: number;
+export interface InvoiceSaveForm extends InvoiceBaseRecord {
+  lineitems?: InvoiceBaseLineItem[];
 }

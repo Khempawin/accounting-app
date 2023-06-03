@@ -29,7 +29,7 @@ export default function SelectInput({
       name={name}
       control={control}
       render={({ field: { onChange, value } }) => (
-        <FormControl>
+        <FormControl style={{width:"100%"}}>
           <InputLabel>{label}</InputLabel>
           <Select onChange={onChange} value={value} label={label}>
             {renderOptions()}

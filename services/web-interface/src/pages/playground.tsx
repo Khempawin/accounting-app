@@ -1,56 +1,38 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import DialogTitle from "@mui/material/DialogTitle";
-import Dialog from "@mui/material/Dialog";
 import {
   InvoiceBaseRecord,
   InvoiceBaseLineItem,
   InvoiceSaveForm,
-} from "@/app/interfaces/invoice";
-import {
-  Box,
-  ButtonGroup,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  Typography,
-} from "@mui/material";
+} from "../app/interfaces/invoice";
+import { Divider, Grid, List, ListItem, Typography } from "@mui/material";
 import { useFieldArray, useForm } from "react-hook-form";
-import TextInput from "../forms/TextInput";
-import DateInput from "../forms/DateInput";
-import SelectInput from "../forms/SelectInput";
+import TextInput from "../app/components/forms/TextInput";
+import DateInput from "../app/components/forms/DateInput";
+import SelectInput from "../app/components/forms/SelectInput";
 import {
   defaultPaymentOption,
   lineItemCategoryOptions,
   paymentMethodOptions,
-} from "@/app/data/options";
-import AddLineItemDialog from "./AddLineItemDialog";
-import {
-  defaultInvoiceSaveForm,
-  defaultLineItem,
-} from "@/app/data/default_values";
+} from "../app/data/options";
+import { defaultLineItem } from "@/app/data/default_values";
 
-export interface AddInvoiceDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onSave: (newInvoice: InvoiceSaveForm) => void;
-}
-
-export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
-  const { onSave, onClose, open } = props;
-  const { handleSubmit, reset, control, watch } = useForm<InvoiceSaveForm>({
-    defaultValues: defaultInvoiceSaveForm,
-  });
+export default function Playground() {
+  const { handleSubmit, reset, control, watch } =
+    useForm<InvoiceSaveForm>({
+      defaultValues: {
+        date: new Date(),
+        place: "",
+        payment_method: defaultPaymentOption.value,
+        total: 0,
+        lineitems: [],
+      },
+    });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "lineitems",
   });
-
-  const watchLineItem = watch("lineitems") || [];
+  const watchLineItem = watch("lineitems");
   const controlledFields = fields.map((field, index) => {
     return {
       ...field,
@@ -58,40 +40,17 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
     };
   });
 
-  const onSubmit = handleSubmit((data) => {
-    const newLineItem: InvoiceBaseLineItem[] = [];
-    let subtotal = 0;
-    let tax = 0;
-    let tip = 0;
-    let calculated_total = 0;
-
-    // Aggregate items
-    for (const item of newLineItem) {
-      if (item.category == "tax") {
-        tax += item.total;
-      } else if (item.category == "tip") {
-        tip += item.total;
-      } else {
-        subtotal += item.total;
-      }
-    }
-    calculated_total = subtotal + tax + tip;
-
-    const newData: InvoiceSaveForm = {
-      ...data,
-      total_calculated: calculated_total,
-      subtotal_calculated: subtotal,
-      tax_calculated: tax,
-      tip_calculated: tip,
-    };
-
-    reset(defaultInvoiceSaveForm);
-    onSave(newData);
+  const onSubmit = handleSubmit((data: InvoiceSaveForm) => {
+    console.log(data);
   });
 
   const handleClose = () => {
-    reset(defaultInvoiceSaveForm);
-    onClose();
+    reset({
+      date: new Date(),
+      place: "",
+      payment_method: defaultPaymentOption.value,
+      total: 0,
+    });
   };
 
   const handleAddLineItem = () => {
@@ -99,13 +58,11 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
   };
 
   return (
-    <Dialog onClose={handleClose} open={open} fullWidth={true} maxWidth="lg">
+    <div>
       <form onSubmit={onSubmit}>
-        <DialogTitle>Add New Invoice</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To add a new invoice. Fill in the details below.
-          </DialogContentText>
+        <h1>Add New Invoice</h1>
+        <div>
+          <div>To add a new invoice. Fill in the details below.</div>
           <List>
             <ListItem>
               <DateInput name="date" control={control} label="Date" />
@@ -153,7 +110,7 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
               return (
                 <ListItem key={field.id}>
                   <Grid container>
-                    <Grid item xs={3} style={{ margin: "2px 5px" }}>
+                    <Grid item xs={2}>
                       <TextInput
                         name={`lineitems.${index}.name`}
                         control={control}
@@ -161,16 +118,7 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
                         text_type="text"
                       />
                     </Grid>
-                    <Grid
-                      item
-                      xs={3}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        margin: "2px 5px",
-                      }}
-                    >
+                    <Grid item xs={2}>
                       <SelectInput
                         name={`lineitems.${index}.category`}
                         control={control}
@@ -178,16 +126,7 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
                         options={lineItemCategoryOptions}
                       />
                     </Grid>
-                    <Grid
-                      item
-                      xs={1}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        margin: "2px 5px",
-                      }}
-                    >
+                    <Grid item xs={2}>
                       <TextInput
                         name={`lineitems.${index}.quantity`}
                         control={control}
@@ -195,16 +134,7 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
                         text_type="number"
                       />
                     </Grid>
-                    <Grid
-                      item
-                      xs={1}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        margin: "2px 5px",
-                      }}
-                    >
+                    <Grid item xs={2}>
                       <TextInput
                         name={`lineitems.${index}.total`}
                         control={control}
@@ -214,12 +144,11 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
                     </Grid>
                     <Grid
                       item
-                      xs={3}
+                      xs={2}
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
-                        margin: "2px 5px",
+                        margin: "0 auto",
                       }}
                     >
                       <Button
@@ -237,12 +166,12 @@ export default function AddInvoiceDialog(props: AddInvoiceDialogProps) {
               );
             })}
           </List>
-        </DialogContent>
-        <DialogActions>
+        </div>
+        <div>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={onSubmit}>Save</Button>
-        </DialogActions>
+        </div>
       </form>
-    </Dialog>
+    </div>
   );
 }
