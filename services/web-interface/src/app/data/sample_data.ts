@@ -20,6 +20,7 @@ export const sampleInvoiceRecords: InvoiceRecord[] = [
     place: "airport",
     payment_method: "travel card",
     total: 6,
+    total_calculated: 6,
     subtotal_calculated: 6,
     tax_calculated: 0,
     tip_calculated: 0,

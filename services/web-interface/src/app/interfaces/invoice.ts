@@ -11,7 +11,7 @@ export interface InvoiceBaseRecord {
 
 export interface InvoiceRecord extends InvoiceBaseRecord {
   id: number;
-  invoice_id?: InvoiceLineItem[];
+  line_item?: InvoiceLineItem[];
 }
 
 export interface InvoiceBaseLineItem {

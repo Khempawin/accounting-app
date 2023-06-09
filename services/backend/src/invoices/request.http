@@ -1,0 +1,36 @@
+### Create Invoice
+POST http://localhost:3000/invoices/create
+Content-Type: application/json
+
+{
+    "invoice": {
+        "date": "2022-07-25T00:00:00-0600",
+        "place": "airport",
+        "payment_method": "travel card",
+        "total": 6,
+        "total_calculated": 6,
+        "subtotal_calculated": 6,
+        "tax_calculated": 0,
+        "tip_calculated": 0
+    },
+    "lineItems": [
+        {
+            "name": "luggage cart",
+            "category": "services",
+            "quantity": 1,
+            "total": 6
+        },
+        {
+            "name": "tax",
+            "category": "tax",
+            "quantity": 1,
+            "total": 0
+        }
+    ]
+}
+
+### Get Invoice List
+GET http://localhost:3000/invoices
+
+### Get Lineitems
+GET http://localhost:3000/invoices/items/4

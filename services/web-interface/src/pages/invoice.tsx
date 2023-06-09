@@ -1,28 +1,85 @@
 import React from "react";
-import {
-  InvoiceBaseLineItem,
-  InvoiceBaseRecord,
-  InvoiceRecord,
-  InvoiceSaveForm,
-} from "@/app/interfaces/invoice";
+import { InvoiceBaseLineItem, InvoiceBaseRecord, InvoiceRecord, InvoiceSaveForm } from "@/app/interfaces/invoice";
 import { Button } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
-import { sampleInvoiceRecords } from "@/app/data/sample_data";
 import AddInvoiceDialog from "@/app/components/dialog/AddInvoiceDialog";
+import axios from "axios";
 
-export default function Invoice() {
-  const [invoiceRecords, setInvoiceRecords] =
-    React.useState<InvoiceRecord[]>(sampleInvoiceRecords);
+function parseInvoiceResponse(invoiceData: any) {
+  const parsedInvoice = invoiceData.map((val: any) => {
+    return {
+      ...val,
+      date: new Date(val.date),
+    };
+  });
+  return parsedInvoice;
+}
+
+async function getInvoiceListServerSide() {
+  const invoice = await axios.get("http://localhost:5000/invoices");
+  return invoice.data;
+}
+
+async function getInvoiceListClient() {
+  const invoice = await axios.get("/api/get-invoice");
+  return invoice.data;
+}
+
+async function createInvoice(newInvoice: InvoiceSaveForm) {
+    const invoice: InvoiceBaseRecord = {
+      date: newInvoice.date,
+      place: newInvoice.place,
+      payment_method: newInvoice.payment_method,
+      total: newInvoice.total,
+      total_calculated: newInvoice.total_calculated,
+      subtotal_calculated: newInvoice.subtotal_calculated,
+      tax_calculated: newInvoice.tax_calculated,
+      tip_calculated: newInvoice.tip_calculated,
+    };
+    const lineItems: InvoiceBaseLineItem[] = newInvoice.lineitems || [];
+    await axios.post(
+      "/api/create-invoice",
+      {
+        invoice,
+        lineItems,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  return;
+}
+
+export async function getServerSideProps(context: any) {
+  const invoice = await getInvoiceListServerSide();
+  return {
+    props: {
+      invoiceData: invoice,
+    },
+  };
+}
+
+export default function Invoice({
+  invoiceData,
+}: {
+  invoiceData: InvoiceRecord[];
+}) {
+  const parsedInvoice = parseInvoiceResponse(invoiceData);
+
+  const [invoiceRecords, setInvoiceRecords] = React.useState<InvoiceRecord[]>(
+    parsedInvoice || []
+  );
   const [showId, setShowId] = React.useState<number>(0);
   const [open, setOpen] = React.useState(false);
 
-  const handleSaveNewInvoice = (
-    newInvoice: InvoiceSaveForm,
-  ) => {
-    // const newInvoiceAdd = { ...newInvoice, id: 3 };
+  const handleSaveNewInvoice = async (newInvoice: InvoiceSaveForm) => {
     console.log(newInvoice);
-    // setInvoiceRecords(invoiceRecords.concat([newInvoiceAdd]));
+    await createInvoice(newInvoice);
+    const newInvoiceList = await getInvoiceListClient();
+    setInvoiceRecords(parseInvoiceResponse(newInvoiceList));
     setOpen(false);
   };
 
